@@ -5,6 +5,15 @@ import {
   CLEAR_ERROR_REQUEST,
   CLEAR_ERROR_SUCCESS,
   CLEAR_ERROR_FAILURE,
+  LOGOUT_REQUEST,
+  LOGOUT_SUCCESS,
+  LOGOUT_FAILURE,
+  REGISTER_REQUEST,
+  REGISTER_SUCCESS,
+  REGISTER_FAILURE,
+  USER_LOADING_REQUEST,
+  USER_LOADING_SUCCESS,
+  USER_LOADING_FAILURE,
 } from "../types";
 
 const initialState = {
@@ -23,12 +32,15 @@ const initialState = {
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_REQUEST:
+    case LOGOUT_REQUEST:
+    case REGISTER_REQUEST:
       return {
         ...state,
         errorMsg: "",
         isLoading: true,
       };
     case LOGIN_SUCCESS:
+    case REGISTER_SUCCESS:
       localStorage.setItem("token", action.payload.token);
       return {
         ...state,
@@ -39,6 +51,8 @@ const authReducer = (state = initialState, action) => {
         errorMsg: "",
       };
     case LOGIN_FAILURE:
+    case LOGOUT_FAILURE:
+    case REGISTER_FAILURE:
       localStorage.removeItem("token");
       return {
         ...state,
@@ -50,6 +64,42 @@ const authReducer = (state = initialState, action) => {
         isLoading: false,
         userRole: null,
         errorMsg: action.payload.data.msg,
+      };
+
+    case LOGOUT_SUCCESS:
+      localStorage.removeItem("token");
+      return {
+        token: null,
+        user: null,
+        userId: null,
+        isAuthenticated: false,
+        isLoading: false,
+        userRole: null,
+        errorMsg: "",
+      };
+
+    case USER_LOADING_REQUEST:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case USER_LOADING_SUCCESS:
+      return {
+        ...state,
+        isAuthenticated: true,
+        isLoading: false,
+        user: action.payload,
+        userId: action.payload._id,
+        userName: action.payload.name,
+        userRole: action.payload.role,
+      };
+    case USER_LOADING_FAILURE:
+      return {
+        ...state,
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        userRole: "",
       };
 
     case CLEAR_ERROR_REQUEST:
