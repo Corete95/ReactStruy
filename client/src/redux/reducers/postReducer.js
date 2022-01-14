@@ -18,12 +18,12 @@ const initialState = {
   searchResult: "",
 };
 
-export default function (state = initialState, action) {
+const postReducer = (state = initialState, action) => {
   switch (action.type) {
     case POSTS_LOADING_REQUEST:
       return {
         ...state,
-
+        posts: [],
         loading: true,
       };
     case POSTS_LOADING_SUCCESS:
@@ -42,4 +42,5 @@ export default function (state = initialState, action) {
     default:
       return state;
   }
-}
+};
+export default postReducer;
